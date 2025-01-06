@@ -1,4 +1,4 @@
-package com.hiperyum.city.task.api.domain.ports.out;
+package com.hiperyum.city.task.api.ports.out;
 
 import com.hiperyum.city.task.api.domain.model.Device;
 import com.hiperyum.city.task.api.infraestructure.entity.DeviceEntity;

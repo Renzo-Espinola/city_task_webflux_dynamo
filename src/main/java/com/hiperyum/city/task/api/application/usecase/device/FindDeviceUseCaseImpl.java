@@ -1,17 +1,17 @@
-package com.hiperyum.city.task.api.application.usecase.device.impl;
+package com.hiperyum.city.task.api.application.usecase.device;
 
-import com.hiperyum.city.task.api.application.usecase.device.FindDeviceByIdUseCase;
+import com.hiperyum.city.task.api.ports.in.device.FindDeviceByIdUseCase;
 import com.hiperyum.city.task.api.domain.model.Device;
-import com.hiperyum.city.task.api.domain.ports.out.DeviceCrudService;
+import com.hiperyum.city.task.api.ports.out.DeviceCrudService;
 import com.hiperyum.city.task.api.infraestructure.exception.CustomException;
 import com.hiperyum.city.task.api.infraestructure.exception.DeviceNotFoundException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 @Service
-public class FindDeviceImplUseCase implements FindDeviceByIdUseCase {
+public class FindDeviceUseCaseImpl implements FindDeviceByIdUseCase {
     private final DeviceCrudService deviceCrudService;
 
-    public FindDeviceImplUseCase(DeviceCrudService deviceCrudService) {
+    public FindDeviceUseCaseImpl(DeviceCrudService deviceCrudService) {
         this.deviceCrudService = deviceCrudService;
     }
 
@@ -20,6 +20,6 @@ public class FindDeviceImplUseCase implements FindDeviceByIdUseCase {
         return deviceCrudService
                 .findById(id)
                 .onErrorMap(DeviceNotFoundException.class, ex ->
-                        new CustomException("An error ocurred", ex));
+                        new CustomException("Id not Found", ex));
     }
 }

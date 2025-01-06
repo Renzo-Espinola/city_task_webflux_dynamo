@@ -1,7 +1,7 @@
 package com.hiperyum.city.task.api.infraestructure.adapter.out.persistence;
 
 import com.hiperyum.city.task.api.domain.model.Device;
-import com.hiperyum.city.task.api.domain.ports.out.DeviceCrudService;
+import com.hiperyum.city.task.api.ports.out.DeviceCrudService;
 import com.hiperyum.city.task.api.infraestructure.exception.DeviceNotFoundException;
 import com.hiperyum.city.task.api.infraestructure.mapper.DeviceMapper;
 import com.hiperyum.city.task.api.infraestructure.repository.DeviceEntityRepository;
@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 public class DevicePersistenceAdapter implements DeviceCrudService {
     @Autowired
     private final DeviceEntityRepositoryInt deviceEntityRepository;
-    @Autowired
     private final DeviceMapper deviceMapper;
 
     public DevicePersistenceAdapter(DeviceEntityRepository deviceEntityRepository, DeviceMapper deviceMapper) {
@@ -64,4 +63,5 @@ public class DevicePersistenceAdapter implements DeviceCrudService {
                 .flatMap(found->deviceEntityRepository.update(id, device))
                 .switchIfEmpty(Mono.error(new DeviceNotFoundException("Device not found with ID: " + id)));
     }
+
 }

@@ -1,46 +1,49 @@
 package com.hiperyum.city.task.api.infraestructure.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.r2dbc.spi.Row;
+import org.springframework.data.relational.core.mapping.Table;
+import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.time.ZonedDateTime;
 
 @Data
 @Builder
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "HIP_CTY_TASKS")
+@Table("task")
 public class TaskEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HIP_CTY_TASKS_SEQ")
-    @SequenceGenerator(name = "HIP_CTY_TASKS_SEQ", sequenceName = "HIP_CTY_TASKS_SEQ", allocationSize = 1)
-    private long id;
-    @Column(name = "name", length = 30, nullable = false)
+    private int id;
     private String name;
-    @Column(name = "description")
     private String description;
-    @Column(name = "job_id", length = 30, nullable = false)
     private String jobId;
-    @Column(name = "task_hour", nullable = false)
     private int hour;
-    @Column(name = "task_minute", nullable = false)
     private int minute;
-    @Column(name = "execution_days", length = 30, nullable = false)
     private String executionDays;
-    @Column(name = "execution_command", nullable = false)
     private String executionCommand;
-    @Column(name = "execute_until")
     private ZonedDateTime executeUntil;
-    @Column(name = "device_id", length = 30, nullable = false)
     private String deviceId;
-    @Column(name = "device_action", length = 30, nullable = false)
     private String deviceAction;
-    @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;
-    @Column(name = "updated_at", nullable = false)
     private ZonedDateTime updatedAt;
+
+    // Método para mapear el resultado de la consulta R2DBC
+    public static TaskEntity fromRow(Row row) {
+        return TaskEntity.builder()
+                .id(row.get("id", Integer.class))
+                .name(row.get("name", String.class))
+                .description(row.get("description", String.class))
+                .jobId(row.get("job_id", String.class))
+                .hour(row.get("task_hour", Integer.class))
+                .minute(row.get("task_minute", Integer.class))
+                .executionDays(row.get("execution_days", String.class))
+                .executionCommand(row.get("execution_command", String.class))
+                .executeUntil(row.get("execute_until", ZonedDateTime.class))
+                .deviceId(row.get("device_id", String.class))
+                .deviceAction(row.get("device_action", String.class))
+                .createdAt(row.get("created_at", ZonedDateTime.class))
+                .updatedAt(row.get("updated_at", ZonedDateTime.class))
+                .build();
+    }
 }

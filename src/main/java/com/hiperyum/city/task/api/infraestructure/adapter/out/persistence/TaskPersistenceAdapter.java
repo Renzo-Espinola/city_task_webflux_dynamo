@@ -1,33 +1,26 @@
 package com.hiperyum.city.task.api.infraestructure.adapter.out.persistence;
 
-import com.hiperyum.city.task.api.domain.ports.out.TaskCrudService;
+import com.hiperyum.city.task.api.ports.out.TaskCrudService;
 import com.hiperyum.city.task.api.infraestructure.entity.TaskEntity;
 import com.hiperyum.city.task.api.infraestructure.mapper.TaskMapper;
 import com.hiperyum.city.task.api.infraestructure.repository.TaskEntityRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.Trigger;
-import org.springframework.stereotype.Component;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import com.hiperyum.city.task.api.domain.model.Task;
-import reactor.core.scheduler.Scheduler;
 
-import java.time.ZonedDateTime;
-
-@Component
+@Service("TaskPersistenceAdapter")
+@RequiredArgsConstructor
 public class TaskPersistenceAdapter implements TaskCrudService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskPersistenceAdapter.class);
-    private TaskEntityRepository taskEntityRepository;
-    private TaskMapper taskMapper;
-    private Scheduler scheduler;
-
-    public TaskPersistenceAdapter(TaskEntityRepository taskEntityRepository, TaskMapper taskMapper, Scheduler scheduler) {
-        this.taskEntityRepository = taskEntityRepository;
-        this.taskMapper = taskMapper;
-        this.scheduler = scheduler;
-    }
+    private final TaskEntityRepository taskEntityRepository;
+    private final R2dbcEntityTemplate r2dbcEntityTemplate;
+    private final TaskMapper taskMapper;
 
     @Override
     public Mono<Task> create(Task task) {
@@ -39,7 +32,7 @@ public class TaskPersistenceAdapter implements TaskCrudService {
     }
 
     @Override
-    public Mono<Task> findById(Long id) {
+    public Mono<Task> findById(int id) {
         return taskEntityRepository
                 .findById(id)
                 .map(taskMapper::entityToModel)
@@ -55,7 +48,7 @@ public class TaskPersistenceAdapter implements TaskCrudService {
     }
 
     @Override
-    public Mono<Task> update(Long id, Task task) {
+    public Mono<Task> update(int id, Task task) {
         return taskEntityRepository.findById(id)
                 .flatMap(taskFound->{
                     TaskEntity newTask = new TaskEntity();
@@ -77,7 +70,7 @@ public class TaskPersistenceAdapter implements TaskCrudService {
     }
 
     @Override
-    public Mono<Void> delete(Long id) {
+    public Mono<Void> delete(int id) {
        return taskEntityRepository.findById(id)
                .flatMap(taskFound-> taskEntityRepository.deleteById(id))
                .switchIfEmpty(Mono.empty());

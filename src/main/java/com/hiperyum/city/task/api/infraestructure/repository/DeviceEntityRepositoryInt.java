@@ -2,6 +2,7 @@ package com.hiperyum.city.task.api.infraestructure.repository;
 
 import com.hiperyum.city.task.api.domain.model.Device;
 import com.hiperyum.city.task.api.infraestructure.entity.DeviceEntity;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
